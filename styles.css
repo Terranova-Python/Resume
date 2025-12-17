@@ -1464,14 +1464,15 @@ section {
     }
 
     .theme-toggle {
-        right: var(--spacing-sm);
-        padding: var(--spacing-xs);
+        right: 5px;
+        padding: 4px;
+        gap: 4px;
     }
 
     .theme-btn {
-        width: 40px;
-        height: 40px;
-        font-size: 1rem;
+        width: 30px;
+        height: 30px;
+        font-size: 0.8rem;
     }
 
     .section-title {
