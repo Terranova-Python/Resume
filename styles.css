@@ -2024,6 +2024,106 @@ section {
         gap: var(--spacing-sm);
         text-align: center;
     }
+
+    /* Interactive Showcase Mobile */
+    .interactive-showcase {
+        padding: var(--spacing-md);
+    }
+
+    .showcase-title {
+        font-size: 1.8rem;
+    }
+
+    .carousel-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 1.2rem;
+    }
+
+    .carousel-btn.prev {
+        left: -20px;
+    }
+
+    .carousel-btn.next {
+        right: -20px;
+    }
+
+    .demo-title {
+        font-size: 1.4rem;
+    }
+
+    .demo-frame {
+        min-height: 300px;
+        padding: var(--spacing-sm);
+    }
+
+    /* Mini Website Mobile */
+    .mini-nav {
+        flex-direction: column;
+        gap: 0.5rem;
+        padding: 0.8rem;
+    }
+
+    .mini-menu {
+        gap: 1rem;
+        font-size: 0.9rem;
+    }
+
+    .mini-content {
+        padding: 1rem;
+    }
+
+    .mini-page {
+        top: 1rem;
+        left: 1rem;
+        right: 1rem;
+    }
+
+    .mini-cards {
+        flex-direction: column;
+    }
+
+    /* Game Mobile */
+    #gameCanvas {
+        height: 250px;
+    }
+
+    .game-controls {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .game-info {
+        flex-direction: column;
+        gap: 0.5rem;
+        font-size: 0.9rem;
+    }
+
+    /* Automation Mobile */
+    .automation-builder {
+        flex-direction: column;
+        height: auto;
+    }
+
+    .automation-sidebar {
+        width: 100%;
+        height: auto;
+        max-height: 150px;
+        overflow-y: auto;
+    }
+
+    .action-item {
+        padding: 0.6rem;
+        font-size: 0.85rem;
+    }
+
+    .automation-canvas {
+        min-height: 200px;
+    }
+
+    .automation-actions {
+        flex-direction: column;
+    }
 }
 
 @media (max-width: 480px) {
@@ -2046,6 +2146,98 @@ section {
         width: 60px;
         height: 60px;
         font-size: 2rem;
+    }
+
+    /* Interactive Showcase - Extra Small Screens */
+    .showcase-title {
+        font-size: 1.5rem;
+    }
+
+    .showcase-subtitle {
+        font-size: 0.95rem;
+    }
+
+    .carousel-btn {
+        width: 35px;
+        height: 35px;
+        font-size: 1rem;
+    }
+
+    .carousel-btn.prev {
+        left: -17px;
+    }
+
+    .carousel-btn.next {
+        right: -17px;
+    }
+
+    .demo-title {
+        font-size: 1.2rem;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .demo-frame {
+        min-height: 250px;
+        padding: 0.5rem;
+    }
+
+    .demo-description {
+        font-size: 0.9rem;
+    }
+
+    /* Mini Website - Extra Small */
+    .mini-logo {
+        font-size: 1rem;
+    }
+
+    .mini-menu {
+        gap: 0.5rem;
+        font-size: 0.8rem;
+    }
+
+    .mini-page h2 {
+        font-size: 1.2rem;
+    }
+
+    .mini-page p {
+        font-size: 0.9rem;
+    }
+
+    .mini-btn,
+    .mini-submit {
+        padding: 0.6rem 1.5rem;
+        font-size: 0.9rem;
+    }
+
+    /* Game - Extra Small */
+    #gameCanvas {
+        height: 200px;
+    }
+
+    .game-btn {
+        padding: 0.6rem 1.5rem;
+        font-size: 0.9rem;
+    }
+
+    /* Automation - Extra Small */
+    .automation-sidebar h5 {
+        font-size: 0.9rem;
+    }
+
+    .action-item {
+        padding: 0.5rem;
+        font-size: 0.8rem;
+    }
+
+    .dropped-action {
+        padding: 0.8rem;
+        font-size: 0.85rem;
+    }
+
+    .auto-btn {
+        padding: 0.6rem 1.2rem;
+        font-size: 0.9rem;
     }
 }
 
