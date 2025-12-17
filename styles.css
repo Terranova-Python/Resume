@@ -1495,6 +1495,10 @@ section {
         height: 250px;
     }
 
+    .hero-image {
+        object-position: center 40%;
+    }
+
     .stats-grid {
         grid-template-columns: 1fr;
     }
