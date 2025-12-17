@@ -58,7 +58,6 @@
         <div class="hero-content">
             <div class="hero-image-container">
                 <div class="image-frame">
-                    <div class="scanning-line"></div>
                     <img src="headshot.png" alt="Anthony Terrano" class="hero-image">
                     <div class="corner-accent corner-tl"></div>
                     <div class="corner-accent corner-tr"></div>
@@ -479,6 +478,146 @@
                     <div class="tech-icon" data-tooltip="Database"><i class="fas fa-database"></i></div>
                     <div class="tech-icon" data-tooltip="Security"><i class="fas fa-shield-alt"></i></div>
                     <div class="tech-icon" data-tooltip="Network"><i class="fas fa-network-wired"></i></div>
+                </div>
+            </div>
+
+            <!-- Interactive Skills Showcase -->
+            <div class="interactive-showcase">
+                <h3 class="showcase-title">Interactive Skills Demos</h3>
+                <p class="showcase-subtitle">Explore my skills through hands-on, interactive experiences</p>
+                
+                <div class="carousel-container">
+                    <button class="carousel-btn prev" aria-label="Previous demo">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    
+                    <div class="carousel-wrapper">
+                        <div class="carousel-track">
+                            <!-- Demo 1: Web Development -->
+                            <div class="carousel-slide active" data-slide="0">
+                                <div class="demo-container">
+                                    <h4 class="demo-title">
+                                        <i class="fas fa-code"></i> Web Development
+                                    </h4>
+                                    <div class="demo-frame" id="webDevDemo">
+                                        <div class="mini-website">
+                                            <div class="mini-nav">
+                                                <div class="mini-logo">Your Website Here</div>
+                                                <div class="mini-menu">
+                                                    <span class="mini-link active" data-page="home">Home</span>
+                                                    <span class="mini-link" data-page="about">About</span>
+                                                    <span class="mini-link" data-page="work">Work</span>
+                                                    <span class="mini-link" data-page="contact">Contact</span>
+                                                </div>
+                                            </div>
+                                            <div class="mini-content">
+                                                <div class="mini-page active" data-page="home">
+                                                    <h2>Welcome!</h2>
+                                                    <p>This is a fully functional mini website built with HTML, CSS, and JavaScript. Yes, really... This is a website inside a website</p>
+                                                    <button class="mini-btn" onclick="showNotification()">Click Me!</button>
+                                                </div>
+                                                <div class="mini-page" data-page="about">
+                                                    <h2>About Section</h2>
+                                                    <p>Tell us something cool about you!</p>
+                                                    <div class="mini-cards">
+                                                        <div class="mini-card">Human</div>
+                                                        <div class="mini-card">Planet Earth</div>
+                                                        <div class="mini-card">Citizen of the Universe</div>
+                                                    </div>
+                                                </div>
+                                                <div class="mini-page" data-page="work">
+                                                    <h2>My Work</h2>
+                                                    <p>Tell the world what you do, in a modern design</p>
+                                                    <div class="mini-progress">
+                                                        <div class="mini-bar" style="--width: 100%">Your Best Skill</div>
+                                                        <div class="mini-bar" style="--width: 80%">Your Other Skills</div>
+                                                    </div>
+                                                </div>
+                                                <div class="mini-page" data-page="contact">
+                                                    <h2>Get In Touch</h2>
+                                                    <p>Experience form validation and user interactions!</p>
+                                                    <div class="mini-form">
+                                                        <input type="email" placeholder="Your Email" class="mini-input">
+                                                        <button class="mini-submit">Send Message</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <p class="demo-description">Navigate through this mini website to see responsive design, smooth animations, and interactive elements in action.</p>
+                                </div>
+                            </div>
+
+                            <!-- Demo 2: Game Development -->
+                            <div class="carousel-slide" data-slide="1">
+                                <div class="demo-container">
+                                    <h4 class="demo-title">
+                                        <i class="fas fa-gamepad"></i> Game Development
+                                    </h4>
+                                    <div class="demo-frame" id="gameDevDemo">
+                                        <canvas id="gameCanvas" width="600" height="400"></canvas>
+                                        <div class="game-controls">
+                                            <div class="game-info">
+                                                <span>Score: <strong id="gameScore">0</strong></span>
+                                                <span>Arrow Keys: Move | J: Jump</span>
+                                            </div>
+                                            <button class="game-btn" id="startGame">Start Game</button>
+                                        </div>
+                                    </div>
+                                    <p class="demo-description">Play this platformer game built with HTML5 Canvas and JavaScript. Use arrow keys to move and J to jump!</p>
+                                </div>
+                            </div>
+
+                            <!-- Demo 3: AI Automation -->
+                            <div class="carousel-slide" data-slide="2">
+                                <div class="demo-container">
+                                    <h4 class="demo-title">
+                                        <i class="fas fa-robot"></i> AI Automation
+                                    </h4>
+                                    <div class="demo-frame" id="automationDemo">
+                                        <div class="automation-builder">
+                                            <div class="automation-sidebar">
+                                                <h5>Available Actions</h5>
+                                                <div class="action-item" draggable="true" data-action="trigger">
+                                                    <i class="fas fa-play-circle"></i> Trigger
+                                                </div>
+                                                <div class="action-item" draggable="true" data-action="condition">
+                                                    <i class="fas fa-code-branch"></i> Condition
+                                                </div>
+                                                <div class="action-item" draggable="true" data-action="webhook">
+                                                    <i class="fas fa-link"></i> Webhook
+                                                </div>
+                                                <div class="action-item" draggable="true" data-action="ai">
+                                                    <i class="fas fa-brain"></i> AI Process
+                                                </div>
+                                            </div>
+                                            <div class="automation-canvas" id="automationCanvas">
+                                                <div class="canvas-placeholder">
+                                                    <i class="fas fa-hand-pointer"></i>
+                                                    <p>Drag and drop actions here to build your automation workflow</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="automation-actions">
+                                            <button class="auto-btn clear" id="clearAutomation">Clear All</button>
+                                            <button class="auto-btn run" id="runAutomation">Run Automation</button>
+                                        </div>
+                                    </div>
+                                    <p class="demo-description">Build automation workflows by dragging and dropping actions. See how AI can streamline complex processes.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button class="carousel-btn next" aria-label="Next demo">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+                
+                <div class="carousel-indicators">
+                    <span class="indicator active" data-slide="0"></span>
+                    <span class="indicator" data-slide="1"></span>
+                    <span class="indicator" data-slide="2"></span>
                 </div>
             </div>
         </div>

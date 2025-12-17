@@ -20,6 +20,10 @@ document.addEventListener('DOMContentLoaded', () => {
     initSkillBars();
     initThemeToggle();
     initSmoothScroll();
+    initCarousel();
+    initMiniWebsite();
+    initGame();
+    initAutomation();
 });
 
 // ===========================
@@ -664,6 +668,479 @@ if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
         el.style.transition = 'none';
     });
 }
+
+// ===========================
+// CAROUSEL FUNCTIONALITY
+// ===========================
+
+let currentSlide = 0;
+const totalSlides = 3;
+
+function initCarousel() {
+    const prevBtn = document.querySelector('.carousel-btn.prev');
+    const nextBtn = document.querySelector('.carousel-btn.next');
+    const indicators = document.querySelectorAll('.indicator');
+    
+    if (!prevBtn || !nextBtn) return;
+    
+    prevBtn.addEventListener('click', () => changeSlide(-1));
+    nextBtn.addEventListener('click', () => changeSlide(1));
+    
+    indicators.forEach((indicator, index) => {
+        indicator.addEventListener('click', () => goToSlide(index));
+    });
+}
+
+function changeSlide(direction) {
+    currentSlide += direction;
+    if (currentSlide < 0) currentSlide = totalSlides - 1;
+    if (currentSlide >= totalSlides) currentSlide = 0;
+    updateCarousel();
+}
+
+function goToSlide(index) {
+    currentSlide = index;
+    updateCarousel();
+}
+
+function updateCarousel() {
+    const slides = document.querySelectorAll('.carousel-slide');
+    const indicators = document.querySelectorAll('.indicator');
+    const track = document.querySelector('.carousel-track');
+    
+    if (!track) return;
+    
+    track.style.transform = `translateX(-${currentSlide * 100}%)`;
+    
+    slides.forEach((slide, index) => {
+        slide.classList.toggle('active', index === currentSlide);
+    });
+    
+    indicators.forEach((indicator, index) => {
+        indicator.classList.toggle('active', index === currentSlide);
+    });
+}
+
+// ===========================
+// MINI WEBSITE DEMO
+// ===========================
+
+function initMiniWebsite() {
+    const miniLinks = document.querySelectorAll('.mini-link');
+    const miniPages = document.querySelectorAll('.mini-page');
+    
+    if (!miniLinks.length) return;
+    
+    miniLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            const targetPage = link.getAttribute('data-page');
+            
+            // Update active link
+            miniLinks.forEach(l => l.classList.remove('active'));
+            link.classList.add('active');
+            
+            // Update active page
+            miniPages.forEach(page => {
+                page.classList.remove('active');
+                if (page.getAttribute('data-page') === targetPage) {
+                    page.classList.add('active');
+                }
+            });
+        });
+    });
+}
+
+// Notification function for mini website
+window.showNotification = function() {
+    const notification = document.createElement('div');
+    notification.style.position = 'fixed';
+    notification.style.top = '20px';
+    notification.style.right = '20px';
+    notification.style.background = getComputedStyle(document.documentElement).getPropertyValue('--primary-color');
+    notification.style.color = getComputedStyle(document.documentElement).getPropertyValue('--bg-primary');
+    notification.style.padding = '1rem 2rem';
+    notification.style.borderRadius = '10px';
+    notification.style.fontWeight = '600';
+    notification.style.zIndex = '10000';
+    notification.style.animation = 'slideInRight 0.3s ease';
+    notification.textContent = '✨ Interactive element clicked!';
+    
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.style.animation = 'slideOutRight 0.3s ease';
+        setTimeout(() => notification.remove(), 300);
+    }, 2000);
+};
+
+// ===========================
+// GAME DEMO
+// ===========================
+
+function initGame() {
+    const canvas = document.getElementById('gameCanvas');
+    const startBtn = document.getElementById('startGame');
+    const scoreElement = document.getElementById('gameScore');
+    
+    if (!canvas || !startBtn) return;
+    
+    const ctx = canvas.getContext('2d');
+    let gameRunning = false;
+    let score = 0;
+    let player = {
+        x: 50,
+        y: canvas.height - 60,
+        width: 30,
+        height: 30,
+        velocityY: 0,
+        jumping: false
+    };
+    let obstacles = [];
+    let obstacleTimer = 0;
+    let gameLoop;
+    
+    const keys = {};
+    
+    document.addEventListener('keydown', (e) => {
+        keys[e.key] = true;
+        if ((e.key === 'j' || e.key === 'J') && !player.jumping && gameRunning) {
+            player.velocityY = -12;
+            player.jumping = true;
+        }
+    });
+    
+    document.addEventListener('keyup', (e) => {
+        keys[e.key] = false;
+    });
+    
+    startBtn.addEventListener('click', startGame);
+    
+    function startGame() {
+        gameRunning = true;
+        score = 0;
+        obstacles = [];
+        player.y = canvas.height - 60;
+        player.velocityY = 0;
+        player.jumping = false;
+        startBtn.textContent = 'Game Running...';
+        startBtn.disabled = true;
+        
+        gameLoop = setInterval(updateGame, 1000 / 60);
+    }
+    
+    function updateGame() {
+        // Clear canvas
+        ctx.fillStyle = '#000';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        // Update player
+        if (keys['ArrowLeft'] && player.x > 0) player.x -= 5;
+        if (keys['ArrowRight'] && player.x < canvas.width - player.width) player.x += 5;
+        
+        // Gravity
+        player.velocityY += 0.5;
+        player.y += player.velocityY;
+        
+        // Ground collision
+        if (player.y >= canvas.height - player.height - 30) {
+            player.y = canvas.height - player.height - 30;
+            player.velocityY = 0;
+            player.jumping = false;
+        }
+        
+        // Draw ground
+        ctx.fillStyle = '#00ff88';
+        ctx.fillRect(0, canvas.height - 30, canvas.width, 30);
+        
+        // Draw player
+        ctx.fillStyle = '#00ffff';
+        ctx.fillRect(player.x, player.y, player.width, player.height);
+        
+        // Create obstacles
+        obstacleTimer++;
+        if (obstacleTimer > 90) {
+            obstacles.push({
+                x: canvas.width,
+                y: canvas.height - 60,
+                width: 30,
+                height: 30
+            });
+            obstacleTimer = 0;
+        }
+        
+        // Update and draw obstacles
+        for (let i = obstacles.length - 1; i >= 0; i--) {
+            obstacles[i].x -= 5;
+            
+            ctx.fillStyle = '#ff00ff';
+            ctx.fillRect(obstacles[i].x, obstacles[i].y, obstacles[i].width, obstacles[i].height);
+            
+            // Check collision
+            if (checkCollision(player, obstacles[i])) {
+                endGame();
+                return;
+            }
+            
+            // Remove off-screen obstacles and increment score
+            if (obstacles[i].x + obstacles[i].width < 0) {
+                obstacles.splice(i, 1);
+                score++;
+                scoreElement.textContent = score;
+            }
+        }
+    }
+    
+    function checkCollision(rect1, rect2) {
+        return rect1.x < rect2.x + rect2.width &&
+               rect1.x + rect1.width > rect2.x &&
+               rect1.y < rect2.y + rect2.height &&
+               rect1.y + rect1.height > rect2.y;
+    }
+    
+    function endGame() {
+        gameRunning = false;
+        clearInterval(gameLoop);
+        startBtn.textContent = 'Play Again';
+        startBtn.disabled = false;
+        
+        // Game over text
+        ctx.fillStyle = '#ff00ff';
+        ctx.font = '48px Orbitron';
+        ctx.textAlign = 'center';
+        ctx.fillText('GAME OVER', canvas.width / 2, canvas.height / 2);
+        ctx.font = '24px Rajdhani';
+        ctx.fillText(`Score: ${score}`, canvas.width / 2, canvas.height / 2 + 40);
+    }
+}
+
+// ===========================
+// AUTOMATION BUILDER DEMO
+// ===========================
+
+function initAutomation() {
+    const actionItems = document.querySelectorAll('.action-item');
+    const canvas = document.getElementById('automationCanvas');
+    const clearBtn = document.getElementById('clearAutomation');
+    const runBtn = document.getElementById('runAutomation');
+    
+    if (!canvas || !clearBtn || !runBtn) return;
+    
+    let droppedActions = [];
+    
+    // Make action items draggable
+    actionItems.forEach(item => {
+        item.addEventListener('dragstart', handleDragStart);
+    });
+    
+    // Canvas drop handlers
+    canvas.addEventListener('dragover', handleDragOver);
+    canvas.addEventListener('drop', handleDrop);
+    
+    // Button handlers
+    clearBtn.addEventListener('click', clearAllActions);
+    runBtn.addEventListener('click', runAutomation);
+    
+    function handleDragStart(e) {
+        e.dataTransfer.setData('action', e.target.getAttribute('data-action'));
+        e.dataTransfer.setData('icon', e.target.querySelector('i').className);
+        e.dataTransfer.setData('text', e.target.textContent.trim());
+    }
+    
+    function handleDragOver(e) {
+        e.preventDefault();
+        canvas.style.borderColor = getComputedStyle(document.documentElement).getPropertyValue('--accent-color');
+    }
+    
+    function handleDrop(e) {
+        e.preventDefault();
+        canvas.style.borderColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color');
+        
+        const action = e.dataTransfer.getData('action');
+        const icon = e.dataTransfer.getData('icon');
+        const text = e.dataTransfer.getData('text');
+        
+        addActionToCanvas(action, icon, text);
+    }
+    
+    function addActionToCanvas(action, icon, text) {
+        const actionElement = document.createElement('div');
+        actionElement.className = 'dropped-action';
+        actionElement.innerHTML = `
+            <div class="action-content">
+                <i class="${icon}"></i>
+                <span>${text}</span>
+            </div>
+            <div class="remove-action">
+                <i class="fas fa-times"></i>
+            </div>
+        `;
+        
+        canvas.appendChild(actionElement);
+        canvas.classList.add('has-items');
+        droppedActions.push({ action, icon, text });
+        
+        // Add remove handler
+        actionElement.querySelector('.remove-action').addEventListener('click', function() {
+            actionElement.remove();
+            const index = Array.from(canvas.children).indexOf(actionElement);
+            droppedActions.splice(index, 1);
+            if (droppedActions.length === 0) {
+                canvas.classList.remove('has-items');
+            }
+        });
+    }
+    
+    function clearAllActions() {
+        while (canvas.firstChild) {
+            canvas.removeChild(canvas.firstChild);
+        }
+        
+        // Re-add placeholder
+        const placeholder = document.createElement('div');
+        placeholder.className = 'canvas-placeholder';
+        placeholder.innerHTML = `
+            <i class="fas fa-hand-pointer"></i>
+            <p>Drag and drop actions here to build your automation workflow</p>
+        `;
+        canvas.appendChild(placeholder);
+        
+        canvas.classList.remove('has-items');
+        droppedActions = [];
+    }
+    
+    function runAutomation() {
+        if (droppedActions.length === 0) {
+            showAutomationNotification('⚠️ No actions to run!', '#ff00ff');
+            return;
+        }
+        
+        showAutomationNotification('🚀 Automation running...', '#00ff88');
+        
+        // Define action descriptions
+        const actionDescriptions = {
+            trigger: [
+                'User visits a URL',
+                'Form submitted',
+                'Button clicked',
+                'Page loaded'
+            ],
+            webhook: [
+                'URL sent to agent',
+                'POST request sent',
+                'API endpoint called',
+                'Data transmitted'
+            ],
+            ai: [
+                'AI input ingesting...',
+                'Processing data...',
+                'Output generated'
+            ],
+            database: [
+                'Connecting to database...',
+                'Query executed',
+                'Data stored successfully'
+            ],
+            condition: [
+                'Evaluating conditions...',
+                'Checking parameters',
+                'Condition met ✓'
+            ],
+            api: [
+                'Calling external API...',
+                'Response received',
+                'Data parsed'
+            ]
+        };
+        
+        // Animate each action
+        const actions = canvas.querySelectorAll('.dropped-action');
+        actions.forEach((actionElement, index) => {
+            setTimeout(() => {
+                const actionType = droppedActions[index].action;
+                const descriptions = actionDescriptions[actionType] || ['Processing...', 'Complete'];
+                const content = actionElement.querySelector('.action-content span');
+                const originalText = content.textContent;
+                
+                // Green background
+                actionElement.style.background = 'rgba(0, 255, 136, 0.2)';
+                actionElement.style.borderColor = '#00ff88';
+                
+                // Animate through descriptions
+                let descIndex = 0;
+                const descInterval = setInterval(() => {
+                    if (descIndex < descriptions.length) {
+                        content.textContent = descriptions[descIndex];
+                        content.style.fontSize = '0.85rem';
+                        descIndex++;
+                    } else {
+                        clearInterval(descInterval);
+                        // Reset after completion
+                        setTimeout(() => {
+                            content.textContent = originalText;
+                            content.style.fontSize = '';
+                            actionElement.style.background = '';
+                            actionElement.style.borderColor = '';
+                        }, 800);
+                    }
+                }, 800);
+                
+            }, index * 2400); // Increased timing to accommodate multiple messages
+        });
+        
+        setTimeout(() => {
+            showAutomationNotification('✅ Automation completed successfully!', '#00ff88');
+        }, droppedActions.length * 2400 + 1000);
+    }
+    
+    function showAutomationNotification(message, color) {
+        const notification = document.createElement('div');
+        notification.style.position = 'fixed';
+        notification.style.top = '20px';
+        notification.style.right = '20px';
+        notification.style.background = color;
+        notification.style.color = getComputedStyle(document.documentElement).getPropertyValue('--bg-primary');
+        notification.style.padding = '1rem 2rem';
+        notification.style.borderRadius = '10px';
+        notification.style.fontWeight = '600';
+        notification.style.zIndex = '10000';
+        notification.style.animation = 'slideInRight 0.3s ease';
+        notification.textContent = message;
+        
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+            notification.style.animation = 'slideOutRight 0.3s ease';
+            setTimeout(() => notification.remove(), 300);
+        }, 2500);
+    }
+}
+
+// Add CSS animations for notifications
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes slideInRight {
+        from {
+            transform: translateX(400px);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+    
+    @keyframes slideOutRight {
+        from {
+            transform: translateX(0);
+            opacity: 1;
+        }
+        to {
+            transform: translateX(400px);
+            opacity: 0;
+        }
+    }
+`;
+document.head.appendChild(style);
 
 // Export functions for debugging (development only)
 if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
