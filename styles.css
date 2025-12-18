@@ -53,13 +53,13 @@ body[data-theme="water"] {
 
 /* Pastel Theme */
 body[data-theme="pastel"] {
-    --primary-color: #ffb3ba;
-    --secondary-color: #bae1ff;
-    --accent-color: #ffffba;
-    --bg-primary: #2d2d3d;
-    --bg-secondary: #3d3d4d;
-    --text-primary: #f0f0f0;
-    --text-secondary: #d0d0d5;
+    --primary-color: #a8e6cf;
+    --secondary-color: #87ceeb;
+    --accent-color: #b8f3d8;
+    --bg-primary: #1e2d2f;
+    --bg-secondary: #2d3e40;
+    --text-primary: #e8f5e9;
+    --text-secondary: #c8e6c9;
 }
 
 * {
@@ -844,6 +844,28 @@ section {
     50% { box-shadow: 0 0 30px var(--accent-color); }
 }
 
+.electron {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background: var(--primary-color);
+    border-radius: 50%;
+    box-shadow: 0 0 10px var(--primary-color), 0 0 20px var(--primary-color);
+    z-index: 5;
+    animation: electronGlow 1.5s ease-in-out infinite;
+}
+
+@keyframes electronGlow {
+    0%, 100% { 
+        box-shadow: 0 0 10px var(--primary-color), 0 0 20px var(--primary-color);
+        transform: scale(1);
+    }
+    50% { 
+        box-shadow: 0 0 15px var(--primary-color), 0 0 30px var(--primary-color);
+        transform: scale(1.2);
+    }
+}
+
 /* ===========================
    EXPERIENCE SECTION
    =========================== */
@@ -947,6 +969,20 @@ section {
     font-size: 1.1rem;
     color: var(--text-secondary);
     margin-bottom: var(--spacing-sm);
+}
+
+.timeline-company a {
+    color: var(--primary-color);
+    text-decoration: none;
+    transition: all var(--transition-fast);
+    cursor: pointer;
+    position: relative;
+}
+
+.timeline-company a:hover {
+    color: var(--accent-color);
+    text-decoration: underline;
+    text-shadow: 0 0 10px var(--primary-color);
 }
 
 .timeline-description {
@@ -2053,7 +2089,7 @@ section {
     }
 
     .demo-frame {
-        min-height: 300px;
+        min-height: 400px;
         padding: var(--spacing-sm);
     }
 
@@ -2085,7 +2121,7 @@ section {
 
     /* Game Mobile */
     #gameCanvas {
-        height: 250px;
+        height: 300px;
     }
 
     .game-controls {
@@ -2178,7 +2214,7 @@ section {
     }
 
     .demo-frame {
-        min-height: 250px;
+        min-height: 350px;
         padding: 0.5rem;
     }
 
@@ -2212,7 +2248,7 @@ section {
 
     /* Game - Extra Small */
     #gameCanvas {
-        height: 200px;
+        height: 250px;
     }
 
     .game-btn {

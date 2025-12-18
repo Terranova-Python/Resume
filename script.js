@@ -6,6 +6,21 @@ let currentTheme = 'tech';
 let particles = [];
 const particleCount = 50;
 
+// Cached DOM elements
+const cachedElements = {};
+
+// Throttle helper for performance
+function throttle(func, limit) {
+    let inThrottle;
+    return function(...args) {
+        if (!inThrottle) {
+            func.apply(this, args);
+            inThrottle = true;
+            setTimeout(() => inThrottle = false, limit);
+        }
+    };
+}
+
 // ===========================
 // INITIALIZATION
 // ===========================
@@ -24,6 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initMiniWebsite();
     initGame();
     initAutomation();
+    initElectronOrbit();
 });
 
 // ===========================
@@ -80,17 +96,10 @@ function initNavigation() {
     const navLinks = document.querySelector('.nav-links');
     const navItems = document.querySelectorAll('.nav-link');
     
-    // Scroll effect for navbar
-    window.addEventListener('scroll', () => {
-        if (window.scrollY > 100) {
-            navbar.classList.add('scrolled');
-        } else {
-            navbar.classList.remove('scrolled');
-        }
-        
-        // Update active nav link based on scroll position
-        updateActiveNavLink();
-    });
+    // Cache for performance
+    cachedElements.navbar = navbar;
+    cachedElements.sections = document.querySelectorAll('section[id]');
+    cachedElements.navLinks = navItems;
     
     // Mobile menu toggle
     if (navToggle) {
@@ -112,16 +121,16 @@ function initNavigation() {
 }
 
 function updateActiveNavLink() {
-    const sections = document.querySelectorAll('section[id]');
-    const navLinks = document.querySelectorAll('.nav-link');
+    const sections = cachedElements.sections || document.querySelectorAll('section[id]');
+    const navLinks = cachedElements.navLinks || document.querySelectorAll('.nav-link');
     
     let currentSection = '';
+    const scrollY = window.scrollY;
     
     sections.forEach(section => {
         const sectionTop = section.offsetTop;
-        const sectionHeight = section.clientHeight;
         
-        if (window.scrollY >= sectionTop - 200) {
+        if (scrollY >= sectionTop - 200) {
             currentSection = section.getAttribute('id');
         }
     });
@@ -208,7 +217,7 @@ function getThemeColors() {
         'tech': ['#00ffff', '#ff00ff', '#00ff88'],
         'night-sky': ['#ffd700', '#9370db', '#4169e1'],
         'water': ['#00bfff', '#1e90ff', '#48d1cc'],
-        'pastel': ['#ffb3ba', '#bae1ff', '#ffffba']
+        'pastel': ['#a8e6cf', '#87ceeb', '#b8f3d8']
     };
     
     return themeColors[theme] || themeColors.tech;
@@ -429,57 +438,43 @@ function animateTerminal() {
 }
 
 // ===========================
-// PARALLAX EFFECT
+// CONSOLIDATED SCROLL HANDLER
 // ===========================
 
-window.addEventListener('scroll', () => {
+// Cache elements for scroll handler
+let heroSection, circuitLines;
+
+const handleScroll = throttle(() => {
     const scrolled = window.scrollY;
     
-    // Parallax for hero section - faster scroll away
-    const heroSection = document.querySelector('.hero-section');
+    // Update navbar
+    if (cachedElements.navbar) {
+        if (scrolled > 100) {
+            cachedElements.navbar.classList.add('scrolled');
+        } else {
+            cachedElements.navbar.classList.remove('scrolled');
+        }
+    }
+    
+    // Update active nav link
+    updateActiveNavLink();
+    
+    // Parallax for hero section
+    if (!heroSection) heroSection = document.querySelector('.hero-section');
     if (heroSection) {
         heroSection.style.transform = `translateY(${scrolled * 0.2}px)`;
-        // Fade out as user scrolls
-        const opacity = Math.max(0, 1 - (scrolled / 600));
+        const opacity = Math.max(0, 1 - (scrolled / 1200));
         heroSection.style.opacity = opacity;
     }
     
     // Parallax for animated background
-    const circuitLines = document.querySelector('.circuit-lines');
+    if (!circuitLines) circuitLines = document.querySelector('.circuit-lines');
     if (circuitLines) {
         circuitLines.style.transform = `translate(${scrolled * 0.1}px, ${scrolled * 0.1}px)`;
     }
-});
+}, 16); // ~60fps
 
-// ===========================
-// CURSOR GLOW EFFECT
-// ===========================
-
-document.addEventListener('mousemove', (e) => {
-    const glow = document.createElement('div');
-    glow.style.position = 'fixed';
-    glow.style.left = e.clientX + 'px';
-    glow.style.top = e.clientY + 'px';
-    glow.style.width = '5px';
-    glow.style.height = '5px';
-    glow.style.borderRadius = '50%';
-    glow.style.background = getComputedStyle(document.documentElement).getPropertyValue('--primary-color');
-    glow.style.pointerEvents = 'none';
-    glow.style.opacity = '0.5';
-    glow.style.zIndex = '9999';
-    glow.style.transition = 'all 0.3s ease';
-    
-    document.body.appendChild(glow);
-    
-    setTimeout(() => {
-        glow.style.transform = 'scale(3)';
-        glow.style.opacity = '0';
-    }, 10);
-    
-    setTimeout(() => {
-        glow.remove();
-    }, 300);
-});
+window.addEventListener('scroll', handleScroll, { passive: true });
 
 // ===========================
 // WINDOW RESIZE HANDLER
@@ -763,7 +758,7 @@ window.showNotification = function() {
     notification.style.fontWeight = '600';
     notification.style.zIndex = '10000';
     notification.style.animation = 'slideInRight 0.3s ease';
-    notification.textContent = '✨ Interactive element clicked!';
+    notification.textContent = '100 points awarded!';
     
     document.body.appendChild(notification);
     
@@ -811,6 +806,22 @@ function initGame() {
     
     document.addEventListener('keyup', (e) => {
         keys[e.key] = false;
+    });
+    
+    // Add touch/click support for jumping
+    canvas.addEventListener('click', () => {
+        if (!player.jumping && gameRunning) {
+            player.velocityY = -12;
+            player.jumping = true;
+        }
+    });
+    
+    canvas.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        if (!player.jumping && gameRunning) {
+            player.velocityY = -12;
+            player.jumping = true;
+        }
     });
     
     startBtn.addEventListener('click', startGame);
@@ -927,9 +938,32 @@ function initAutomation() {
     
     let droppedActions = [];
     
-    // Make action items draggable
+    // Make action items draggable and double-tap/click enabled
     actionItems.forEach(item => {
         item.addEventListener('dragstart', handleDragStart);
+        
+        // Add double-click/tap support
+        let tapCount = 0;
+        let tapTimer;
+        
+        item.addEventListener('click', (e) => {
+            tapCount++;
+            
+            if (tapCount === 1) {
+                tapTimer = setTimeout(() => {
+                    tapCount = 0;
+                }, 300); // 300ms window for double tap
+            } else if (tapCount === 2) {
+                clearTimeout(tapTimer);
+                tapCount = 0;
+                
+                // Add to canvas on double tap/click
+                const action = item.getAttribute('data-action');
+                const icon = item.querySelector('i').className;
+                const text = item.textContent.trim();
+                addActionToCanvas(action, icon, text);
+            }
+        });
     });
     
     // Canvas drop handlers
@@ -1010,11 +1044,11 @@ function initAutomation() {
     
     function runAutomation() {
         if (droppedActions.length === 0) {
-            showAutomationNotification('⚠️ No actions to run!', '#ff00ff');
+            showAutomationNotification('Cmon man, add some automations!', '#c6542aff');
             return;
         }
         
-        showAutomationNotification('🚀 Automation running...', '#00ff88');
+        showAutomationNotification('Automation running...', '#00ff88');
         
         // Define action descriptions
         const actionDescriptions = {
@@ -1088,7 +1122,7 @@ function initAutomation() {
         });
         
         setTimeout(() => {
-            showAutomationNotification('✅ Automation completed successfully!', '#00ff88');
+            showAutomationNotification('Automation completed successfully!', '#00ff88');
         }, droppedActions.length * 2400 + 1000);
     }
     
@@ -1141,6 +1175,56 @@ style.textContent = `
     }
 `;
 document.head.appendChild(style);
+
+// ===========================
+// ELECTRON ORBIT ANIMATION
+// ===========================
+
+function initElectronOrbit() {
+    const techOrbit = document.getElementById('techOrbit');
+    if (!techOrbit) return;
+    
+    const centerX = 200;
+    const centerY = 200;
+    
+    const orbitConfigs = [
+        { radius: 75, count: 1, speed: 0.02 },
+        { radius: 125, count: 2, speed: 0.015 },
+        { radius: 175, count: 3, speed: 0.01 }
+    ];
+    
+    const electrons = [];
+    
+    orbitConfigs.forEach((config) => {
+        for (let i = 0; i < config.count; i++) {
+            const electron = document.createElement('div');
+            electron.className = 'electron';
+            electron.style.animationDelay = `${i * 0.3}s`;
+            techOrbit.appendChild(electron);
+            
+            electrons.push({
+                element: electron,
+                angle: (i / config.count) * Math.PI * 2,
+                radius: config.radius,
+                speed: config.speed
+            });
+        }
+    });
+    
+    // Use requestAnimationFrame for smooth animation
+    function animateElectrons() {
+        electrons.forEach(electron => {
+            electron.angle += electron.speed;
+            const x = centerX + Math.cos(electron.angle) * electron.radius;
+            const y = centerY + Math.sin(electron.angle) * electron.radius;
+            electron.element.style.left = `${x}px`;
+            electron.element.style.top = `${y}px`;
+        });
+        requestAnimationFrame(animateElectrons);
+    }
+    
+    animateElectrons();
+}
 
 // Export functions for debugging (development only)
 if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
